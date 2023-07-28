@@ -1,32 +1,36 @@
 class Solution {
 public:
     double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
-        int m = nums1.size();
-        int n = nums2.size();
-        int total = m + n;
-        if (total & 0x1) {
-            return find_kth(nums1.begin(), m, nums2.begin(), n, total / 2 + 1);
-        } else {
-            return (find_kth(nums1.begin(), m, nums2.begin(), n, total / 2) +
-                    find_kth(nums1.begin(), m, nums2.begin(), n, total / 2 + 1)) / 2.0;
+        int n = nums1.size(), m= nums2.size();
+        if(n>m){
+            return findMedianSortedArrays(nums2,nums1);
         }
-    }
-    private:
-    static int find_kth(vector<int>::iterator A, int m, vector<int>::iterator B, int n, int k) {
-        // always assume that m is equal or smaller than n
-        if (m > n) return find_kth(B, n, A, m, k);
-        if (m == 0) return *(B + k - 1);
-        if (k == 1) return min(*A, *B);
         
-        // divide k into two parts
-        int pa = min(k / 2, m), pb = k - pa;
-        if (*(A + pa - 1) < *(B + pb - 1)) {
-            return find_kth(A + pa, m - pa, B, n, k - pa);
-        } else if (*(A + pa - 1) > *(B + pb - 1)) {
-            return find_kth(A, m, B + pb, n - pb, k - pb);
-        } else {
-            return A[pa - 1];
+        int begin = 0, end = n;
+        while(begin<=end){
+            int i1 = (begin+end)/2;
+            int i2 = (n+m+1)/2 - i1;
+            int min1 = (i1==n)?INT_MAX:nums1[i1];
+            int max1 = (i1==0)?INT_MIN:nums1[i1-1];
+            int min2 = (i2==m)?INT_MAX:nums2[i2];
+            int max2 = (i2==0)?INT_MIN:nums2[i2-1]; 
+            if(max<=min2 && max2<=min1){
+                if((n+m)%2==0){
+                    return (max(max1,max2)+min(min1,min2))/2.0;
+                }
+                else{
+                    return max(max1,max2);
+                }
+            }
+            else if(max1>min2){
+                end = i1-1;
+            }
+            else{
+                begin = i1+1;
+            }
+
         }
+
     }
 
 };
