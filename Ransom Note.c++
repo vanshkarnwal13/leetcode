@@ -3,20 +3,25 @@ public:
     bool canConstruct(string ransomNote, string magazine) {
         int l1 = ransomNote.length();
         int l2 = magazine.length();
-        int count = 0;
-        for (int i = 0; i < l1; i++) {
-            for (int j = 0; j < l2; j++) {
-                if (ransomNote[i] == magazine[j]) {
-                    magazine[j] = ' ';
-                    count++;
-                    break;
-                }
+        if(l1 > l2) 
+            return false;
+        unordered_map<char, int> m;
+        for(int i = 0; i < l2; i++){
+            if(m.find(magazine[i]) == m.end()){
+                m[magazine[i]] = 1;
+            }
+            else{
+                m[magazine[i]]++;
             }
         }
-        if (count == l1) {
-            return true;
-        } else {
-            return false;
+        for(int i = 0; i < l1; i++){
+            if(m.find(ransomNote[i]) == m.end() || m[ransomNote[i]] == 0){
+                return false;
+            }
+            else{
+                m[ransomNote[i]]--;
+            }
         }
+        return true;
     }
 };
